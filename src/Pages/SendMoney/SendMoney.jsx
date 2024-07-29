@@ -50,8 +50,11 @@ const SendMoney = () => {
     };
 
     return (
-        <div className='max-w-4xl   md:ml-64'>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+        <div className='max-w-4xl mx-autot ml-16 md:ml-64 h-screen'>
+            <div>
+                <h1 className='text-center bg-black font-serif text-white  p-3 dark:text-white  text-xl md:text-4xl '>Welcome to  Send Money</h1>
+            </div>
+            <form className="space-y-4 md:space-y-6 mt-12" onSubmit={handleSubmit}>
                 <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Recipient Phone Number</label>
                     <input 

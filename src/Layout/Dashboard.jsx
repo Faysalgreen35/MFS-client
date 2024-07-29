@@ -1,9 +1,48 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
-
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { AuthContext } from '../Provider/AuthProvider';
+import useAdmin from '../hooks/useAdmin';
+import useAgent from '../hooks/useAgent';
+import { HiArrowRightOnRectangle } from "react-icons/hi2";
 const Dashboard = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const sidebarRef = useRef(null);
+    const { logOut } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [theme, setTheme] = useState('light');
+    const [isAdmin] = useAdmin();
+    const [isAgent] = useAgent();
+
+
+    useEffect(() => {
+        // Check the initial theme
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme('dark');
+            document.documentElement.classList.add('dark');
+        } else {
+            setTheme('light');
+            document.documentElement.classList.remove('dark');
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        if (theme === 'light') {
+            setTheme('dark');
+            document.documentElement.classList.add('dark');
+        } else {
+            setTheme('light');
+            document.documentElement.classList.remove('dark');
+        }
+    };
+    const handleLogout = async () => {
+        try {
+            await logOut();
+            // Handle successful logout if needed
+            navigate('/login'); // Redirect to dashboard
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
 
     const handleSidebarToggle = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -28,15 +67,15 @@ const Dashboard = () => {
     }, [isSidebarOpen]);
 
     return (
-        <div className='flex  '>
-            <div className="flex">
+        <div className='flex relative '>
+            <div className="flex  ">
                 {/* Menu Icon for Small Devices */}
                 <button
-                    className="block lg:hidden p-2 focus:outline-none"
+                    className="block absolute top-0 left-0 mt-12  lg:hidden p-2 focus:outline-none"
                     onClick={handleSidebarToggle}
                 >
                     <svg
-                        className="w-6 h-6 text-gray-600 dark:text-gray-200"
+                        className="w-8 h-8 text-gray-600 dark:text-gray-200"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -58,93 +97,246 @@ const Dashboard = () => {
 
                 <aside
                     ref={sidebarRef}
-                    className={`${
-                        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                    } fixed inset-y-0 left-0 w-64 h-screen px-5 py-8 overflow-y-auto bg-yellow-100 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 transform lg:translate-x-0 transition-transform duration-200 ease-in-out z-30`}
+                    className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        } fixed inset-y-0 left-0 md:w-64 h-screen px-5 py-8 overflow-y-auto bg-yellow-100 border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700 transform lg:translate-x-0 transition-transform duration-200 ease-in-out z-30`}
                 >
                     <Link to="/">
-                        <img className="w-auto h-12 lg:w-36 lg:h-16 lg:ml-4"  src="https://rb.gy/vvpqyt" alt="" />
+                        <img className="w-auto h-12 lg:w-36 lg:h-16 lg:ml-4" src="https://rb.gy/vvpqyt" alt="" />
                     </Link>
 
                     <div className="flex flex-col justify-between flex-1 mt-6">
                         <nav className="-mx-3 space-y-6">
                             <ul className="space-y-3">
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/send-money"
-                                        className={({ isActive }) =>
-                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${
-                                                isActive
-                                                    ? 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
-                                                    : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
-                                            }`
-                                        }
-                                    >
-                                        <span className="mx-2 text-sm font-medium">Send Money</span>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/cash-out"
-                                        className={({ isActive }) =>
-                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${
-                                                isActive
-                                                    ? 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
-                                                    : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
-                                            }`
-                                        }
-                                    >
-                                        <span className="mx-2 text-sm font-medium">Cash-Out</span>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/cash-in"
-                                        className={({ isActive }) =>
-                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${
-                                                isActive
-                                                    ? 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
-                                                    : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
-                                            }`
-                                        }
-                                    >
-                                        <span className="mx-2 text-sm font-medium">Cash-in</span>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/balance-inquiry"
-                                        className={({ isActive }) =>
-                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${
-                                                isActive
-                                                    ? 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
-                                                    : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
-                                            }`
-                                        }
-                                    >
-                                        <span className="mx-2 text-sm font-medium">Balance Inquiry</span>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/transaction-history"
-                                        className={({ isActive }) =>
-                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${
-                                                isActive
-                                                    ? 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
-                                                    : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
-                                            }`
-                                        }
-                                    >
-                                        <span className="mx-2 text-sm font-medium">Transactions History</span>
-                                    </NavLink>
-                                </li>
+                                {
+
+                                    isAdmin ?
+                                    <>
+                                     <>
+                                             
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/all-users"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Users</span>
+                                                </NavLink>
+                                            </li>
+                                            
+
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/transaction-history"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Transactions History</span>
+                                                </NavLink>
+                                            </li>
+                                        </>
+                                    </>
+                                    :
+                                    isAgent ?
+                                        <>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/cash-in-request"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Cash In Requests</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/cash-out-request"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Cash Out Requests</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/balance-inquery"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Balance Inquiry</span>
+                                                </NavLink>
+                                            </li>
+
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/transaction-history"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Transactions History</span>
+                                                </NavLink>
+                                            </li>
+                                        </>
+                                        :
+                                        <>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/send-money"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Send Money</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/cash-out"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Cash-Out</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/cash-in"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Cash-in</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/balance-inquery"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Balance Inquiry</span>
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/dashboard/transaction-history"
+                                                    className={({ isActive }) =>
+                                                        `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                            ? 'text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200'
+                                                            : 'text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                                                        }`
+                                                    }
+                                                >
+                                                    <span className="mx-2 text-sm font-medium">Transactions History</span>
+                                                </NavLink>
+                                            </li>
+                                        </>
+                                }
+
                             </ul>
+
+                            {/* ------------- */}
+
+                            <ul className="space-y-3  border-t-2 border-dotted border-black pt-6">
+
+                                <li>
+                                    <NavLink
+                                        to="/login"
+                                        className={({ isActive }) =>
+                                            `flex items-center px-3 py-2 transition-colors duration-300 transform rounded-lg ${isActive
+                                                ? "text-gray-700 bg-gray-300 dark:bg-gray-800 dark:text-gray-200"
+                                                : "text-gray-600 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200"
+                                            }`
+                                        }
+                                    >
+                                        <button onClick={handleLogout} className="
+                                      mx-2 text-sm font-medium">
+                                           <HiArrowRightOnRectangle className='text-4xl text-center mx-12' />
+                                        </button>
+                                    </NavLink>
+                                </li>
+
+                            </ul>
+
                         </nav>
                     </div>
                 </aside>
             </div>
             <div className="md:flex-1 p-8">
+                {/* dark and light mode  */}
+                <div className='absolute top-0 right-0 mr-0 md:mr-4 mt-12 md:mt-12  '>
+                    <span className='mx-2 text-sm font-medium  '>  </span>
+                    <button
+                        id="theme-toggle"
+                        type="button"
+                        className="text-green-500 text-3xl ml-12 border rounded-full border-yellow-500 p-3     dark:text-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700  p-5.5"
+                        onClick={toggleTheme}
+                    >
+                        {theme === 'light' ? (
+                            <svg
+                                id="theme-toggle-dark-icon"
+                                className="w-7 h-7"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        ) : (
+                            <svg
+                                id="theme-toggle-light-icon"
+                                className=" w-7 h-7 bg-white text-green-500 rounded-full p-1  "
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                ></path>
+                            </svg>
+                        )}
+                    </button>
+
+                </div>
                 <Outlet></Outlet>
             </div>
         </div>

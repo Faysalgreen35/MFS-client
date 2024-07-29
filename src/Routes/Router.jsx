@@ -4,12 +4,22 @@ import {
   
   } from "react-router-dom";
 import Main from "../Layout/Main";
-import Home from "../components/Home/Home";
+// import Home from "../components/Home/Home";
 import Register from "../components/Register/Register";
 import Dashboard from "../Layout/Dashboard";
 import Login from "../components/Login/Login";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
 import SendMoney from "../Pages/SendMoney/SendMoney";
+import CashOut from "../Pages/CashOut/CashOut";
+import CashIn from "../Pages/CashIn/CashIn";
+import Balance from "../Pages/Balance/Balance";
+import Transaction from "../Pages/Transaction/Transaction"; 
+import PrivateRoutes from "./../Provider/PrivateRoutes";
+import CashinRequesht from "../Pages/Agent/CashinRequesht";
+import AgentRoute from "./AgentRoute";
+import CashOutRequest from "../Pages/Agent/CashOutRequest";
+import AdminRoute from './AdminRoute';
+import AllUsers from "../Pages/Admin/AllUsers";
   
   export const router = createBrowserRouter([
     {
@@ -17,10 +27,14 @@ import SendMoney from "../Pages/SendMoney/SendMoney";
       element: <Main></Main>,
       errorElement: <ErrorPage />,
       children: [
+        // {
+        //   path: '/home',
+        //   element: <Home></Home>
+  
+        // },
         {
           path: '/',
-          element: <Home></Home>
-  
+          element: <Login></Login>
         },
         {
           path: 'login',
@@ -45,55 +59,53 @@ import SendMoney from "../Pages/SendMoney/SendMoney";
         // user dashboard
         {
           path: 'send-money',
-          element: <SendMoney></SendMoney>
+          element: <PrivateRoutes><SendMoney></SendMoney></PrivateRoutes>
         },
-        // {
-        //   path: 'my-added-pets',
-        //   element: <PrivateRoutes><MyAddedPets></MyAddedPets></PrivateRoutes>,
-        // },
-        // {
-        //   path: 'updatePetList/:id',
-        //   element: <PrivateRoutes><UpdatePetAddedPage /></PrivateRoutes>,
-        //   // loader: ({ params }) => fetch(`http://localhost:5000/petList/${params.id}`)
-        //   loader: ({ params }) => fetch(`https://pet-adoption-server-delta.vercel.app/${params.id}`)
-        // },
-        // {
-        //   path: 'create-donation',
-        //   element: <PrivateRoutes><CreateDonation></CreateDonation></PrivateRoutes>,
-        // },
-        // {
-        //   path: 'my-donate-campaign',
-        //   element: <PrivateRoutes><MyDonationCampaigns /></PrivateRoutes>,
-        // },
-        // {
-        //   path: 'updateDonate/:id',
-        //   element: <PrivateRoutes><UpdateDonate /></PrivateRoutes>,
-        //   // loader: ({ params }) => fetch(`http://localhost:5000/donate/${params.id}`)
-        //   loader: ({ params }) => fetch(`https://pet-adoption-server-delta.vercel.app/donate/${params.id}`)
-        // },
-        // {
-        //   path: 'adopt-request',
-        //   element: <PrivateRoutes><AdoptRequest /></PrivateRoutes>,
-        // },
-        // {
-        //   path: 'my-donations',
-        //   element: <PrivateRoutes><MyDonations></MyDonations></PrivateRoutes>
-        // },
-  
+        {
+          path: 'cash-out',
+          element: <PrivateRoutes><CashOut/> </PrivateRoutes>,
+        },
+        {
+          path: 'cash-in',
+          element:  <PrivateRoutes><CashIn></CashIn></PrivateRoutes>
+        },
+        {
+          path: 'balance-inquery',
+          element:  <PrivateRoutes><Balance></Balance></PrivateRoutes>
+        },
+        {
+          path: 'transaction-history',
+          element: <PrivateRoutes> <Transaction></Transaction></PrivateRoutes>
+        },
+
+         // agent routes
+         {
+          path: 'cash-in-request',
+          element: <AgentRoute><CashinRequesht></CashinRequesht></AgentRoute>
+         },
+         {
+          path: 'cash-out-request',
+          element: <AgentRoute><CashOutRequest></CashOutRequest></AgentRoute>
+         },
+         {
+          path: 'balance-inquery',
+          element: <AgentRoute><Balance></Balance></AgentRoute>
+         },
+         {
+          path: 'transaction-history',
+          element: <AgentRoute> <Transaction></Transaction></AgentRoute>
+        },
+      
         // admin routes
-  
-        // {
-        //   path: 'users',
-        //   element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
-        // },
-        // {
-        //   path: 'all-pets',
-        //   element: <AdminRoute><AllPets></AllPets></AdminRoute>
-        // },
-        // {
-        //   path: 'all-donations',
-        //   element: <AdminRoute><AllDonations></AllDonations></AdminRoute>
-        // },
+        {
+          path: 'all-users',
+          element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+         },
+         {
+          path: 'transaction-history',
+          element: <AdminRoute> <Transaction></Transaction></AdminRoute>
+        },
+        
        
   
   
