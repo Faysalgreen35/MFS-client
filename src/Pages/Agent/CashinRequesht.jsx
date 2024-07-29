@@ -70,8 +70,8 @@ const CashinRequest = () => {
                       : 'bg-gray-50 dark:bg-gray-800'
                   } border-b dark:border-gray-700`}
                 >
-                  <td className='px-6 py-4'>{request.requesterMobile}</td>
-                  <td className='px-6 py-4'>{request.amount} Taka</td>
+                  <td className='px-6 py-4'>{request.requesterMobile}</td> 
+                  <td className='px-6 py-4'>{request.amount.toFixed(2)} Taka</td>
                   <td className='px-6 py-4 hidden md:table-cell'>{request.status}</td>
                   
                   <td className='px-6 py-4 hidden md:table-cell '>
